@@ -1,0 +1,54 @@
+<div class="register-container">
+    <article class="register-content">
+        <div class="register-image-wrapper">
+            <img src="assets/images/together.png" alt="register-image" class="register-image-img">
+        </div>
+
+        <form class="register-form" [formGroup]="registerForm" (ngSubmit)="submitForm()">
+            <div class="register-form-header">
+                <div class="register-logo-wrapper">
+                    <a routerLink="/">
+                        <img src="assets/images/output-onlinepngtools.png" alt="logo" class="register-logo-img">
+                    </a>
+                </div>
+                <h1>Create your account</h1>
+            </div>
+
+            <div class="register-form-inputs">
+
+                <app-text-input label="First Name" name="firstName" placeholder="Enter your first name" type="text"
+                    [formGroup]="registerForm" [hasError]="hasError('firstName')"
+                    [errorMessage]="errorMessage('firstName')" />
+
+                <app-text-input label="Last Name" name="lastName" placeholder="Enter your last name" type="text"
+                    [formGroup]="registerForm" [hasError]="hasError('lastName')"
+                    [errorMessage]="errorMessage('lastName')" />
+
+                <app-text-input label="Email" name="email" placeholder="Enter your email" type="email"
+                    [formGroup]="registerForm" [hasError]="hasError('email')" [errorMessage]="errorMessage('email')" />
+
+
+                <app-select-input label="State" name="state" placeholder="Select your state" [options]="stateOptions"
+                    formControlName="state" [hasError]="hasError('state')" [errorMessage]="errorMessage('state')" />
+                <!-- <app-select-input formControlName="state" [options]="stateOptions">
+                </app-select-input> -->
+
+                <app-password-input label="Password" name="password" placeholder="Enter your password" type="password"
+                    [formGroup]="registerForm" [hasError]="hasError('password')"
+                    [errorMessage]="errorMessage('password')" />
+
+                <app-password-input label="Confirm Password" name="confirmPassword" placeholder="Confirm your password"
+                    type="password" [formGroup]="registerForm" [hasError]="hasError('confirmPassword')"
+                    [errorMessage]="errorMessage('confirmPassword')" />
+
+                <div class="links-wrapper">
+                    <a routerLink="/auth/login">Already have an account? Login</a>
+                </div>
+            </div>
+
+            <div class="register-form-actions">
+                <app-button type="submit" [fullWidth]="true" [disabled]="registerForm.invalid">Register</app-button>
+            </div>
+        </form>
+    </article>
+</div>

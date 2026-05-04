@@ -1,0 +1,8 @@
+<div class="input-wrapper" [formGroup]="formGroup">
+    <label [for]="name" class="input-label">{{ label }}</label>
+    <input class="input-field" [class.error]="hasError" [type]="type" [id]="name" [name]="name"
+        [placeholder]="placeholder" [formControlName]="name">
+    @if (hasError) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+</div>

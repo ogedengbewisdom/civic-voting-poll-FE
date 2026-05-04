@@ -1,0 +1,36 @@
+<div class="login-container">
+    <article class="login-content">
+        <div class="login-image-wrapper">
+            <img src="assets/images/together.png" alt="login-image" class="login-image-img">
+        </div>
+
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submitForm()">
+            <div class="login-form-header">
+                <div class="login-logo-wrapper">
+                    <a routerLink="/">
+                        <img src="assets/images/output-onlinepngtools.png" alt="logo" class="login-logo-img">
+                    </a>
+                </div>
+                <h1>Login to your account</h1>
+            </div>
+
+            <div class="login-form-inputs">
+                <app-text-input label="Email" name="email" placeholder="Enter your email" type="email"
+                    [formGroup]="loginForm" [hasError]="hasError('email')" [errorMessage]="errorMessage('email')" />
+                <app-password-input label="Password" name="password" placeholder="Enter your password" type="password"
+                    [formGroup]="loginForm" [hasError]="hasError('password')"
+                    [errorMessage]="errorMessage('password')" />
+
+                <div class="links-wrapper">
+                    <a routerLink="/auth/register">Don't have an account? Register</a>
+                    <a routerLink="/auth/forgot-password">Forgot password?</a>
+
+                </div>
+            </div>
+
+            <div class="login-form-actions">
+                <app-button type="submit" [fullWidth]="true" [disabled]="loginForm.invalid">Login</app-button>
+            </div>
+        </form>
+    </article>
+</div>
