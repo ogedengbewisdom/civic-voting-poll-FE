@@ -19,6 +19,8 @@
     --color-bg-dark: #071a10;
     --color-text: #303030;
     --color-link: #55675F;
+    --color-hover: #d3dec2;
+    --color-content-bg: #f2f5f2;
 
     /* States */
     --color-error: #dc2626;
@@ -26,6 +28,7 @@
     --color-warning: #f59e0b;
     --color-success: #16a34a;
     --color-info: #2563eb;
+    --color-warning: #fef3c7;
 
     /* screen sizes */
     --screen-sm: 640px;

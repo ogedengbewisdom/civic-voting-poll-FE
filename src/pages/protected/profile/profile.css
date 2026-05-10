@@ -1,0 +1,55 @@
+.profile-container {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-form {
+    width: 70%;
+    padding: 0 var(--spacing-lg);
+
+}
+
+.profile-form-header {
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-form-header h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    font-family: var(--font-text);
+}
+
+
+.profile-form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    width: 100%;
+}
+
+
+@media (max-width: 1024px) {}
+
+@media (max-width: 768px) {
+
+    .profile-form {
+        padding: 0 var(--spacing-md);
+        width: 90%;
+    }
+
+    .profile-form-header h1 {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+@media (max-width: 480px) {
+
+    .profile-form {
+        width: 100%;
+        padding: 1rem 0.5rem;
+    }
+}

@@ -5,6 +5,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Button } from '../../../shared/components/button/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { errorState, getErrorMessage, trimValidator } from '../../../shared/utils';
+import { AuthService } from '../service/auth-service';
+import { ToastService } from '../../../shared/components/toast/service/toast-service';
+import { BehaviorSubject, tap } from 'rxjs';
+import { email } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-forgot-password',
@@ -17,6 +21,10 @@ export class ForgotPassword implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private formBuilder = inject(FormBuilder);
+  private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
   forgotPasswordForm!: FormGroup;
   token = this.route.snapshot.params['token'];
   buildForm() {
@@ -41,9 +49,32 @@ export class ForgotPassword implements OnInit {
     if (this.forgotPasswordForm.invalid) {
       return;
     }
-    console.log(this.forgotPasswordForm.value);
 
-    this.forgotPasswordForm.reset();
-    this.router.navigate(['/auth/reset-password/token']);
+    // console.log(this.forgotPasswordForm.value);
+    // const data = { email: this.forgotPasswordForm.value.email };
+    const data = this.forgotPasswordForm.value.email;
+
+    this.authService
+      .forgotPassword(data)
+      .pipe(
+        tap(() => {
+          this.toastService.pending('Logging in...');
+          this.loadingSubject.next(true);
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.toastService.success(response.message, response.statusCode);
+          this.loadingSubject.next(false);
+          this.forgotPasswordForm.reset();
+          this.router.navigateByUrl('/');
+        },
+        error: (error) => {
+          const error_message = error.error.message || 'An unknown error occurred';
+          const status_code = error.error.statusCode || 500;
+          this.toastService.error(error_message, status_code);
+          this.loadingSubject.next(false);
+        },
+      });
   }
 }

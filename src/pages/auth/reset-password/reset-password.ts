@@ -9,18 +9,27 @@ import {
   passwordMatchValidator,
   trimValidator,
 } from '../../../shared/utils';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AuthService } from '../service/auth-service';
+import { ToastService } from '../../../shared/components/toast/service/toast-service';
+import { BehaviorSubject, tap } from 'rxjs';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [PasswordInput, CommonModule, ReactiveFormsModule, Button],
+  imports: [PasswordInput, CommonModule, ReactiveFormsModule, Button, RouterLink],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
 export class ResetPassword implements OnInit {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
+  private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private activatedRoute = inject(ActivatedRoute);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
   resetPasswordForm!: FormGroup;
+  token!: string;
 
   buildForm() {
     this.resetPasswordForm = this.formBuilder.group(
@@ -36,6 +45,7 @@ export class ResetPassword implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.token = this.activatedRoute.snapshot.paramMap.get('token') ?? '';
   }
 
   get controls() {
@@ -50,9 +60,35 @@ export class ResetPassword implements OnInit {
     if (this.resetPasswordForm.invalid) {
       return;
     }
-    console.log(this.resetPasswordForm.value);
 
-    this.resetPasswordForm.reset();
-    this.router.navigate(['/auth/login']);
+    const { newPassword, confirmNewPassword } = this.resetPasswordForm.value;
+
+    const data = {
+      password: newPassword,
+      confirm_password: confirmNewPassword,
+    };
+
+    this.authService
+      .resetPassword(data, this.token)
+      .pipe(
+        tap(() => {
+          this.toastService.pending('Logging in...');
+          this.loadingSubject.next(true);
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.toastService.success(response.message, response.statusCode);
+          this.loadingSubject.next(false);
+          this.resetPasswordForm.reset();
+          this.router.navigateByUrl('/auth/login');
+        },
+        error: (error) => {
+          const error_message = error.error.message || 'An unknown error occurred';
+          const status_code = error.error.statusCode || 500;
+          this.toastService.error(error_message, status_code);
+          this.loadingSubject.next(false);
+        },
+      });
   }
 }

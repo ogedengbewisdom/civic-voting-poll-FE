@@ -18,8 +18,12 @@
         </p>
 
         <div class="hero-actions" role="group" aria-label="Get started">
-            <app-button variant="primary" size="medium">View active polls</app-button>
-            <app-button variant="tertiary" size="medium">Register</app-button>
+
+            @if(isLoggedIn$ | async){
+            <app-button variant="primary" size="medium" (buttonClick)="navigateToPoll()">View active polls</app-button>
+            }@else {
+            <app-button variant="tertiary" size="medium" (buttonClick)="navigateToRegister()">Register</app-button>
+            }
         </div>
 
         <section class="hero-stats" aria-label="Platform statistics">

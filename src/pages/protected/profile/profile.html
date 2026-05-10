@@ -1,0 +1,30 @@
+<div class="profile-container">
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="submitForm()">
+        <div class="profile-form-header">
+            <h1>Personal Information</h1>
+        </div>
+
+        <div class="profile-form-inputs">
+
+            <app-text-input label="First Name" name="firstName" placeholder="Enter your first name" type="text"
+                [formGroup]="profileForm" [hasError]="hasError('firstName')"
+                [errorMessage]="errorMessage('firstName')" />
+
+            <app-text-input label="Last Name" name="lastName" placeholder="Enter your last name" type="text"
+                [formGroup]="profileForm" [hasError]="hasError('lastName')" [errorMessage]="errorMessage('lastName')" />
+
+            <app-text-input label="Email" name="email" placeholder="Enter your email" type="email"
+                [formGroup]="profileForm" [hasError]="hasError('email')" [errorMessage]="errorMessage('email')" />
+
+
+            <app-select-input label="State" name="state" placeholder="Select your state" [options]="state$ | async"
+                formControlName="state" [hasError]="hasError('state')" [errorMessage]="errorMessage('state')" />
+
+        </div>
+
+        <div class="profile-form-actions">
+            <app-button type="submit" [fullWidth]="true" [disabled]="profileForm.invalid"
+                [loading]="loading">update</app-button>
+        </div>
+    </form>
+</div>

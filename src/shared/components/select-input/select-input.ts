@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
-interface IOption {
+export interface IOption {
   value: string;
   label: string;
 }
@@ -21,10 +28,10 @@ interface IOption {
   templateUrl: './select-input.html',
   styleUrl: './select-input.css',
 })
-export class SelectInput implements ControlValueAccessor {
+export class SelectInput implements ControlValueAccessor, OnChanges {
   @Input() label = '';
   @Input() placeholder = 'Select an option';
-  @Input() options: IOption[] = [];
+  @Input() options: IOption[] | null = null;
   @Input() hasError: boolean = false;
   @Input() errorMessage: string = '';
 
@@ -50,7 +57,7 @@ export class SelectInput implements ControlValueAccessor {
   // writes value into component
   writeValue(value: string): void {
     this.value = value;
-    const match = this.options.find((option) => option.value === value);
+    const match = this.options?.find((option) => option.value === value);
     this.selectedLabel = match ? match.label : '';
   }
 
@@ -86,5 +93,12 @@ export class SelectInput implements ControlValueAccessor {
 
   closeDropdown(): void {
     this.isOpen = false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['options'] && this.value) {
+      const match = this.options?.find((option) => option.value === this.value);
+      this.selectedLabel = match ? match.label : '';
+    }
   }
 }

@@ -1,0 +1,13 @@
+<app-modal>
+    <div class="icon-wrapper">
+        <img src="/assets/icons/warning.svg" alt="warning-icon" />
+    </div>
+
+    <h2>Confirm log out</h2>
+    <p>Are you sure you want to log out? You will be signed out of your account and any unsaved changes may be lost.</p>
+
+    <div class="actions">
+        <app-button (buttonClick)="toggleModal()">Cancel</app-button>
+        <app-button (buttonClick)="logout()">Logout</app-button>
+    </div>
+</app-modal>
