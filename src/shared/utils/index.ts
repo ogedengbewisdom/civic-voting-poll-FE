@@ -100,3 +100,5 @@ export const trimValidator = (control: AbstractControl): ValidationErrors | null
   }
   return null;
 };
+
+// export const truncate = ()

@@ -4,14 +4,18 @@ import { TextInput } from '../../../shared/components/text-input/text-input';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PasswordInput } from '../../../shared/components/password-input/password-input';
 import { Button } from '../../../shared/components/button/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   errorState,
   getErrorMessage,
   passwordMatchValidator,
   trimValidator,
 } from '../../../shared/utils';
-import { SelectInput } from '../../../shared/components/select-input/select-input';
+import { IOption, SelectInput } from '../../../shared/components/select-input/select-input';
+import { StateService } from '../../../shared/service/state-service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthService } from '../service/auth-service';
+import { ToastService } from '../../../shared/components/toast/service/toast-service';
 
 @Component({
   selector: 'app-register',
@@ -30,15 +34,14 @@ import { SelectInput } from '../../../shared/components/select-input/select-inpu
 })
 export class Register implements OnInit {
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private stateService = inject(StateService);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
+  loading$ = this.loadingSubject.asObservable();
+  state$!: Observable<IOption[]>;
   registerForm!: FormGroup;
-  stateOptions = [
-    { value: 'CA', label: 'California' },
-    { value: 'NY', label: 'New York' },
-    { value: 'TX', label: 'Texas' },
-    { value: 'FL', label: 'Florida' },
-    { value: 'IL', label: 'Illinois' },
-    { value: 'MI', label: 'Michigan' },
-  ];
 
   buildForm() {
     this.registerForm = this.formBuilder.group(
@@ -58,6 +61,7 @@ export class Register implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.state$ = this.stateService.getStates();
   }
 
   get controls() {
@@ -72,8 +76,32 @@ export class Register implements OnInit {
     if (this.registerForm.invalid) {
       return;
     }
-    console.log(this.registerForm.value);
 
-    this.registerForm.reset();
+    this.loadingSubject.next(true);
+
+    const { firstName, lastName, password, state, email } = this.registerForm.value;
+
+    const data = {
+      first_name: firstName,
+      last_name: lastName,
+      password,
+      state_id: Number(state),
+      email,
+    };
+
+    this.authService.register(data).subscribe({
+      next: (response) => {
+        this.toastService.success(response.message, response.statusCode);
+        this.loadingSubject.next(false);
+        this.router.navigateByUrl('/auth/login');
+        this.registerForm.reset();
+      },
+      error: (error) => {
+        const error_message = error.error.message || 'An unknown error occurred';
+        const status_code = error.error.statusCode || 500;
+        this.toastService.error(error_message, status_code);
+        this.loadingSubject.next(false);
+      },
+    });
   }
 }

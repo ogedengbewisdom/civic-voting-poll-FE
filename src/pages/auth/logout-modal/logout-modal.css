@@ -1,0 +1,33 @@
+.icon-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-warning);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--spacing-md) auto;
+}
+
+h2 {
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    color: var(--color-text);
+    margin: 0 0 0.5rem;
+    text-align: center;
+}
+
+p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.6;
+    margin: 0 0 1.75rem;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    width: 100%;
+}

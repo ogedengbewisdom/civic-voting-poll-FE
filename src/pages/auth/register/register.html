@@ -28,10 +28,8 @@
                     [formGroup]="registerForm" [hasError]="hasError('email')" [errorMessage]="errorMessage('email')" />
 
 
-                <app-select-input label="State" name="state" placeholder="Select your state" [options]="stateOptions"
+                <app-select-input label="State" name="state" placeholder="Select your state" [options]="state$ | async"
                     formControlName="state" [hasError]="hasError('state')" [errorMessage]="errorMessage('state')" />
-                <!-- <app-select-input formControlName="state" [options]="stateOptions">
-                </app-select-input> -->
 
                 <app-password-input label="Password" name="password" placeholder="Enter your password" type="password"
                     [formGroup]="registerForm" [hasError]="hasError('password')"
@@ -47,7 +45,8 @@
             </div>
 
             <div class="register-form-actions">
-                <app-button type="submit" [fullWidth]="true" [disabled]="registerForm.invalid">Register</app-button>
+                <app-button type="submit" [fullWidth]="true"
+                    [disabled]="registerForm.invalid || (loading$ | async) === true">Register</app-button>
             </div>
         </form>
     </article>

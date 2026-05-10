@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Auth } from './auth';
+import { PollDetail } from './poll-detail';
 
-describe('Auth', () => {
-  let component: Auth;
-  let fixture: ComponentFixture<Auth>;
+describe('PollDetail', () => {
+  let component: PollDetail;
+  let fixture: ComponentFixture<PollDetail>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Auth]
+      imports: [PollDetail]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Auth);
+    fixture = TestBed.createComponent(PollDetail);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

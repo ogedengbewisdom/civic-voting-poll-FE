@@ -1,0 +1,119 @@
+<ng-content>
+    @if(showLogoutModal$ | async) {
+    <app-logout-modal />
+    }
+    @let profile = profile$ | async;
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo-wrapper" (click)="navigateHome()">
+                <div class="logo-image">
+                    <img src="assets/logo.png" alt="civic logo" class="logo">
+                </div>
+
+                <h5>CivicPoll</h5>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    @for (navLink of navLinks; track navLink.label) {
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="navLink.routerLink" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{ exact: navLink.exact }">
+                            {{navLink.label | titlecase}}
+                        </a>
+                    </li>
+                    }
+                </ul>
+            </nav>
+            <div class="app-button">
+                <div style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;">
+                    <div class="profile-email-avartar ">
+                        <div class="avatar">{{(profile?.first_name | slice:0:1)?.toUpperCase()}}{{(profile?.last_name |
+                            slice:0:1)?.toUpperCase()}}</div>
+                        <p class="email">{{ profile?.first_name | truncate:10 }} {{ profile?.last_name | truncate:10 }}
+                        </p>
+                    </div>
+                    <p class="email" style="text-align: center;">{{ profile?.state }} state</p>
+                </div>
+                <app-button (buttonClick)="logout()" [fullWidth]="true" variant="primary">Logout</app-button>
+            </div>
+
+        </aside>
+
+        <div class="main">
+            <header class="header">
+                <div>
+                    <button class="nav-bar-menu" aria-label="Open menu" [attr.aria-expanded]="isMenuOpen"
+                        aria-controls="mobile-menu" (click)="toggleMenu()">
+                        <img class="nav-bar-menu-icon" src="assets/icons/menu.svg" alt="">
+                    </button>
+                    <!-- @if(isMenuOpen) { -->
+                    <div class="menu-overlay" [class.mobile]="!isMenuOpen" (click)="toggleMenu()"></div>
+                    <div class="menu-content" [class.mobile]="!isMenuOpen">
+                        <div class="menu-header">
+
+                            <div class="menu-header-logo">
+                                <img src="assets/logo.png" alt="CivicPoll logo" class="logo">
+                                <h5>CivicPoll</h5>
+                            </div>
+                            <div class="menu-header-close" (click)="toggleMenu()" role="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="menu-wrapper">
+                            <ul class="menu-list">
+                                @for (navLink of navLinks; track navLink.label) {
+                                <li class="menu-item">
+                                    <a class="menu-link" [routerLink]="navLink.routerLink" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{ exact: navLink.exact }"
+                                        (click)="toggleMenu()">{{navLink.label | titlecase}}</a>
+                                </li>
+                                }
+                            </ul>
+
+                            <!-- <div class="menu-logout">
+                                <app-button (buttonClick)="logout()" [fullWidth]="true"
+                                    variant="primary">Logout</app-button>
+                            </div> -->
+                            <div class="app-button">
+                                <div style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;">
+                                    <div class="profile-email-avartar ">
+                                        <div class="avatar">{{(profile?.first_name |
+                                            slice:0:1)?.toUpperCase()}}{{(profile?.last_name |
+                                            slice:0:1)?.toUpperCase()}}</div>
+                                        <p class="email">{{ profile?.first_name | truncate:10 }} {{ profile?.last_name |
+                                            truncate:10 }}
+                                        </p>
+                                    </div>
+                                    <p class="email" style="text-align: center;">{{ profile?.state }} state</p>
+                                </div>
+                                <app-button (buttonClick)="logout()" [fullWidth]="true"
+                                    variant="primary">Logout</app-button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- } -->
+                </div>
+
+
+                <div class="email-wrapper">
+                    <!-- <p class="email">{{profile?.email}}</p> -->
+                    <div class="avatar">{{profile?.first_name?.[0]}}{{profile?.last_name?.[0]}}</div>
+
+                </div>
+            </header>
+
+            <main class="content">
+                <div class="content-inner">
+                    <router-outlet></router-outlet>
+                </div>
+            </main>
+        </div>
+    </div>
+</ng-content>

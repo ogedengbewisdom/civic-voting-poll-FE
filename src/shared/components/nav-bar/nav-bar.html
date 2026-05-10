@@ -1,3 +1,8 @@
+@if(showLogoutModal$ | async) {
+<app-logout-modal />
+}
+
+
 <div class="nav-bar">
   <div class="nav-bar-content">
 
@@ -18,30 +23,34 @@
         <li class="nav-list-item">
           <a class="nav-list-item-link" routerLink="/about" routerLinkActive="active">About</a>
         </li>
-        <li class="nav-list-item">
+        <!-- <li class="nav-list-item">
           <a class="nav-list-item-link" routerLink="/auth/login" routerLinkActive="active">Login</a>
-        </li>
+        </li> -->
       </ul>
     </nav>
 
     <!-- desktop logout -->
     <div class="button-container">
-      <app-button>Logout</app-button>
+      @if(isLoggedIn$ | async) {
+      <app-button (buttonClick)="toggleModal()">Logout</app-button>
+      }@else {
+      <app-button (buttonClick)="navigateToLogin()">Login</app-button>
+      }
+
     </div>
 
     <!-- hamburger button -->
-    <button class="nav-bar-menu" aria-label="Open menu" [attr.aria-expanded]="menuOpened | async"
-      aria-controls="mobile-menu" (click)="toggleMenu()">
+    <button class="nav-bar-menu" aria-label="Open menu" [attr.aria-expanded]="menuOpened" aria-controls="mobile-menu"
+      (click)="toggleMenu()">
       <img class="nav-bar-menu-icon" src="assets/icons/menu.svg" alt="">
     </button>
 
     <!-- overlay -->
-    <div class="nav-bar-menu-overlay" [class.open]="menuOpened | async" (click)="toggleMenu()">
+    <div class="nav-bar-menu-overlay" [class.open]="menuOpened" (click)="toggleMenu()">
     </div>
 
     <!-- mobile menu panel -->
-    <div id="mobile-menu" class="nav-bar-menu-content" [class.open]="menuOpened | async"
-      [attr.aria-hidden]="!(menuOpened | async)">
+    <div id="mobile-menu" class="nav-bar-menu-content" [class.open]="menuOpened" [attr.aria-hidden]="!menuOpened">
 
       <div class="nav-bar-menu-inner-content">
 
@@ -56,10 +65,10 @@
                 <a class="nav-list-item-link" routerLink="/about" routerLinkActive="active"
                   (click)="toggleMenu()">About</a>
               </li>
-              <li class="nav-list-item">
+              <!-- <li class="nav-list-item">
                 <a class="nav-list-item-link" routerLink="/auth/login" routerLinkActive="active"
                   (click)="toggleMenu()">Login</a>
-              </li>
+              </li> -->
             </ul>
           </nav>
 
@@ -70,7 +79,7 @@
         </div>
 
         <div class="nav-bar-menu-button-container">
-          <app-button>Logout</app-button>
+          <app-button (buttonClick)="toggleModal()">Logout</app-button>
         </div>
 
       </div>

@@ -29,7 +29,8 @@
             </div>
 
             <div class="login-form-actions">
-                <app-button type="submit" [fullWidth]="true" [disabled]="loginForm.invalid">Login</app-button>
+                <app-button type="submit" [fullWidth]="true"
+                    [disabled]="loginForm.invalid || (loading$ | async) === true">Login</app-button>
             </div>
         </form>
     </article>
