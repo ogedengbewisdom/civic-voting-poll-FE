@@ -7,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  onVote(pollId: string): void {
+    console.log('Voting on poll:', pollId);
+    // Navigate to poll detail / vote page
+  }
 
+  onViewResults(pollId: string): void {
+    console.log('Viewing results for poll:', pollId);
+  }
 }

@@ -1,0 +1,20 @@
+@if(totalPages > 1) {
+<div class="pagination">
+
+    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="onPrev()">
+        <span class="btn-icon">←</span>
+        <span class="btn-label">Previous</span>
+    </button>
+
+
+    <p>{{currentPage}}</p>
+
+
+
+    <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="onNext()">
+        <span class="btn-label">Next</span>
+        <span class="btn-icon">→</span>
+    </button>
+
+</div>
+}

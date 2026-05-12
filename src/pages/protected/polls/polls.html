@@ -1,1 +1,63 @@
-<p>polls works!</p>
+<div class="dashboard-wrapper">
+
+    <div class="dashboard-body">
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <p class="stat-value">3</p>
+                <p class="stat-label">Active polls</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-value">5,245</p>
+                <p class="stat-label">Total votes</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-value">37</p>
+                <p class="stat-label">States reached</p>
+            </div>
+        </div>
+
+
+        <div class="section-header">
+            <div class="section-title-group">
+                <p class="section-eyebrow">Active polls</p>
+                <h2 class="section-title">What Nigeria needs most</h2>
+            </div>
+
+        </div>
+
+        <div class="polls-grid">
+
+            <div class="poll-card poll-card--featured" (click)="onVote('infrastructure')">
+                <div class="poll-card__header">
+                    <span class="status-badge status-badge--active">Active</span>
+                    <span class="options-count">4 options</span>
+                </div>
+                <p class="poll-card__title">Most urgent infrastructure priority for Nigeria</p>
+                <p class="poll-card__subtitle">Roads, power, water, or internet?</p>
+                <div class="poll-card__footer">
+                    <span class="vote-count">1,248 votes</span>
+                    <span class="vote-cta">Vote →</span>
+                </div>
+            </div>
+
+            <div class="poll-card" (click)="onVote('unemployment')">
+                <div class="poll-card__header">
+                    <span class="status-badge status-badge--active">Active</span>
+                    <span class="options-count">3 options</span>
+                </div>
+                <p class="poll-card__title">Best approach to tackle youth unemployment</p>
+                <p class="poll-card__subtitle">Skills training, entrepreneurship, or public jobs?</p>
+                <div class="poll-card__footer">
+                    <span class="vote-count">892 votes</span>
+                    <span class="vote-cta">Vote →</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div style="margin-top: 2rem;">
+            <app-pagination [totalPages]="totalPages" />
+        </div>
+    </div>
+</div>

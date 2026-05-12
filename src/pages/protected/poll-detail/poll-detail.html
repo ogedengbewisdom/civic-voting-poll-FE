@@ -1,1 +1,81 @@
-<p>poll-detail works!</p>
+<div class="poll-detail-wrapper">
+
+    <div class="poll-body">
+
+        <article class="vote-panel">
+
+            <span class="status-badge status-badge--active">Active</span>
+
+            <h2 class="poll-title">Most urgent infrastructure priority for Nigeria</h2>
+            <p class="poll-description">
+                Nigeria faces significant infrastructure deficits across multiple sectors.
+                As a citizen, which area do you believe demands the most immediate government
+                attention and investment?
+            </p>
+
+            <div class="options-section">
+                <p class="options-label">Cast your vote</p>
+
+                <div *ngFor="let option of options" class="option-item"
+                    [class.option-item--selected]="selectedOption === option.id" (click)="selectOption(option.id)">
+                    <div class="option-radio" [class.option-radio--selected]="selectedOption === option.id">
+                        <div class="option-radio__dot" *ngIf="selectedOption === option.id"></div>
+                    </div>
+                    <span class="option-label" [class.option-label--selected]="selectedOption === option.id">
+                        {{ option.label }}
+                    </span>
+                </div>
+
+                <button class="submit-btn" [disabled]="!selectedOption || hasVoted" (click)="submitVote()">
+                    {{ hasVoted ? 'Vote submitted ✓' : 'Submit vote' }}
+                </button>
+            </div>
+
+            <div class="poll-meta">
+                <div class="meta-item">
+                    <p class="meta-value">1,248</p>
+                    <p class="meta-label">Total votes</p>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <p class="meta-value">29</p>
+                    <p class="meta-label">States</p>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <p class="meta-label">Created by</p>
+                    <p class="meta-value meta-value--sm">Admin</p>
+                </div>
+            </div>
+
+        </article>
+
+
+        <article class="snapshot-panel">
+            <p class="snapshot-label">Live snapshot</p>
+
+            <div class="result-item" *ngFor="let result of results">
+                <div class="result-header">
+                    <span class="result-name" [class.result-name--leading]="result.leading">{{ result.label }}</span>
+                    <span class="result-pct" [class.result-pct--leading]="result.leading">{{ result.pct }}%</span>
+                </div>
+                <div class="result-bar-track">
+                    <div class="result-bar-fill" [class.result-bar-fill--leading]="result.leading"
+                        [style.width.%]="result.pct">
+                    </div>
+                </div>
+                <span class="result-votes">{{ result.votes }} votes</span>
+            </div>
+
+            <div class="your-state">
+                <p class="your-state__label">Your state</p>
+                <div class="your-state__value">
+                    <div class="state-dot"></div>
+                    <span class="state-name">Lagos</span>
+                </div>
+            </div>
+
+        </article>
+
+    </div>
+</div>
