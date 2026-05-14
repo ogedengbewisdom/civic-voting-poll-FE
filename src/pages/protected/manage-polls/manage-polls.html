@@ -1,0 +1,92 @@
+<section>
+    <div class="polls-management">
+        <!-- Header -->
+        <header class="management-header" aria-labelledby="polls-heading">
+            <div class="header-left">
+                <p class="header-eyebrow">Management</p>
+                <h1 id="polls-heading" class="header-title">All polls</h1>
+            </div>
+
+            <app-button>+ New poll</app-button>
+        </header>
+
+        <!-- Polls Table -->
+        <div class="table-wrapper" role="region" aria-label="Polls management table" tabindex="0">
+            <table class="polls-table" aria-describedby="polls-heading">
+                <thead>
+                    <tr>
+                        <th scope="col" class="col-title">Title</th>
+                        <th scope="col" class="col-status">Status</th>
+                        <th scope="col" class="col-votes">Created By</th>
+                        <th scope="col" class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (polls$ | async; as response) {
+
+                    @for (poll of response.data; track $index) {
+                    <tr class="poll-row">
+
+                        <!-- Title cell -->
+                        <td class="cell-title">
+                            <span class="poll-name">{{ poll.title }}</span>
+                            <span class="poll-meta">
+                                {{ poll.poll_option_count }} options · Created {{ poll.created_at | date}}
+                            </span>
+                        </td>
+
+                        <!-- Status cell -->
+                        <td class="cell-status">
+                            <span class="status-badge" [class.status-badge--active]="poll.status === 'active'"
+                                [class.status-badge--closed]="poll.status === 'closed'">
+                                {{ poll.status | uppercase }}
+                            </span>
+                        </td>
+
+                        <td class="cell-created_by">
+                            <span>
+                                {{ `${poll.user.first_name} ${poll.user.last_name}`}}
+                            </span>
+                        </td>
+
+
+                        <td class="cell-actions">
+                            <button type="button" class="action-btn" (click)="managePoll(poll.id)">
+                                manage
+                            </button>
+                        </td>
+
+                    </tr>
+                    }
+                    }
+
+                </tbody>
+
+            </table>
+
+            @if (polls$ | async; as response) {
+            @if(response.pagination.total_pages > 1){
+            <div style="margin-top: 2rem; padding-inline: 1rem;">
+                <app-pagination [currentPage]="response.pagination.page" [totalItems]="response.pagination.total"
+                    [itemsPerPage]="response.pagination.limit" [totalPages]="response.pagination.total_pages"
+                    (pageChange)="onPageChange($event)" />
+            </div>
+            }
+            }
+        </div>
+    </div>
+
+
+    <div class="nav-bar-menu-overlay" [class.open]="menuOpened" (click)="toggleMenu()">
+    </div>
+    <div id="poll-detail" class="nav-bar-menu-content" [class.open]="menuOpened" [attr.aria-hidden]="!menuOpened">
+
+        <div class="nav-bar-menu-inner-content">
+
+
+
+        </div>
+    </div>
+</section>

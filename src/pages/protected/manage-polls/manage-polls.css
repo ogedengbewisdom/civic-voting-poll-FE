@@ -1,0 +1,223 @@
+.polls-management {
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-family: var(--font-text);
+    padding: 1.5rem;
+    margin: 1rem;
+}
+
+.management-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.header-eyebrow {
+    font-size: 10px;
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    margin: 0 0 0.3rem;
+    font-family: var(--font-text);
+}
+
+.header-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    margin: 0;
+    font-family: var(--font-heading);
+    line-height: 1.2;
+}
+
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--color-hover);
+}
+
+
+.polls-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.polls-table thead {
+    border-bottom: 0.5px solid var(--color-hover);
+}
+
+
+.polls-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 10px;
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text);
+    font-family: var(--font-text);
+    white-space: nowrap;
+}
+
+.col-votes,
+.col-actions {
+    text-align: center;
+}
+
+
+.poll-row {
+    border-bottom: 0.5px solid var(--color-hover);
+    transition: background 0.15s ease;
+}
+
+.poll-row:last-child {
+    border-bottom: none;
+}
+
+.poll-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.polls-table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+
+.cell-title {
+    min-width: 220px;
+}
+
+.poll-name {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+}
+
+.poll-meta {
+    display: block;
+    font-size: 11px;
+    color: var(--color-text);
+    font-family: var(--font-text);
+}
+
+
+.cell-status {
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: var(--font-weight-medium);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-text);
+}
+
+.status-badge--active {
+    background: rgba(0, 132, 75, 0.15);
+    color: var(--color-primary);
+    border: 0.5px solid rgba(0, 132, 75, 0.4);
+}
+
+.status-badge--closed {
+    background: rgba(220, 38, 38, 0.12);
+    color: var(--color-error);
+    border: 0.5px solid rgba(220, 38, 38, 0.3);
+}
+
+
+.cell-created_by {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    font-family: var(--font-text);
+    text-align: start;
+    white-space: nowrap;
+}
+
+.cell-actions {
+    text-align: start;
+}
+
+.action-btn {
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.65rem;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-text);
+    cursor: pointer;
+    border: 0.5px solid var(--color-hover);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.action-btn:hover {
+    background-color: var(--color-hover);
+}
+
+.nav-bar-menu-overlay {
+    /* display: none; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.nav-bar-menu-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.nav-bar-menu-content {
+    /* display: none; */
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100vh;
+    background-color: var(--color-white);
+    z-index: 11;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.nav-bar-menu-content.open {
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+
+@media (max-width: 768px) {
+    .polls-management {
+        padding: 1rem;
+    }
+
+    .polls-table th,
+    .polls-table td {
+        padding: 0.75rem 0.6rem;
+    }
+
+    .nav-bar-menu-content {
+        width: 90%;
+    }
+}

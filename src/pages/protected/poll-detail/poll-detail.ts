@@ -1,50 +1,93 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-interface PollOption {
-  label: string;
-  id: string;
-}
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PollService } from '../service/poll-service';
+import { BehaviorSubject, map } from 'rxjs';
+import { IDetailProps } from '../interface';
+import { AuthService } from '../../auth/service/auth-service';
+import { Button } from '../../../shared/components/button/button';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastService } from '../../../shared/components/toast/service/toast-service';
 
-interface PollResult {
-  label: string;
-  pct: number;
-  votes: number;
-  leading: boolean;
-}
 @Component({
   selector: 'app-poll-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, Button],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './poll-detail.html',
   styleUrl: './poll-detail.css',
 })
-export class PollDetail {
-  selectedOption: string | null = null;
+export class PollDetail implements OnInit {
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+  private pollService = inject(PollService);
+  private detailSubject = new BehaviorSubject<IDetailProps | null>(null);
+  private authService = inject(AuthService);
+  private destroyRef$ = inject(DestroyRef);
+  private toastService = inject(ToastService);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+  voteObj$ = this.pollService.voteObj$;
+  hasVoted$ = this.voteObj$.pipe(map((vote) => !!vote?.id));
+  profile$ = this.authService.profile$;
+  details$ = this.detailSubject.asObservable();
+  selectedOption: number | null = null;
   hasVoted: boolean = false;
+  poll_id!: string;
 
-  options: PollOption[] = [
-    { id: 'roads', label: 'Road networks & highways' },
-    { id: 'electricity', label: 'Electricity & power supply' },
-    { id: 'water', label: 'Clean water & sanitation' },
-    { id: 'internet', label: 'Internet & digital infrastructure' },
-  ];
+  ngOnInit(): void {
+    this.poll_id = this.activatedRoute.snapshot.paramMap.get('poll_id') ?? '';
+    this.pollService
+      .loadSingleActivePoll(this.poll_id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef$),
+        map((data) => {
+          this.detailSubject.next(data);
+        }),
+      )
+      .subscribe();
 
-  results: PollResult[] = [
-    { label: 'Electricity & power', pct: 38, votes: 474, leading: true },
-    { label: 'Road networks', pct: 29, votes: 362, leading: false },
-    { label: 'Clean water', pct: 21, votes: 262, leading: false },
-    { label: 'Internet & digital', pct: 12, votes: 150, leading: false },
-  ];
+    this.pollService
+      .checkVotedPoll(this.poll_id)
+      .pipe(takeUntilDestroyed(this.destroyRef$))
+      .subscribe();
 
-  selectOption(id: string): void {
+    this.voteObj$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef$),
+        map((vote) => !!vote?.id),
+      )
+      .subscribe((hasVoted) => (this.hasVoted = hasVoted));
+  }
+
+  viewResult(): void {
+    this.router.navigateByUrl(`/app/result/${this.poll_id}`);
+  }
+
+  selectOption(id: number): void {
     if (this.hasVoted) return;
     this.selectedOption = id;
   }
 
   submitVote(): void {
     if (!this.selectedOption || this.hasVoted) return;
-    this.hasVoted = true;
-    // TODO: send selectedOption to your API/service
-    console.log('Vote submitted:', this.selectedOption);
+
+    this.toastService.pending('Logging in...');
+    this.loadingSubject.next(true);
+
+    this.pollService.castVote(this.poll_id, this.selectedOption.toString()).subscribe({
+      next: (response) => {
+        this.hasVoted = true;
+        this.toastService.success(response.message, response.statusCode);
+        this.loadingSubject.next(false);
+
+        this.router.navigateByUrl(`/app/result/${this.poll_id}`);
+      },
+      error: (error) => {
+        const error_message = error.error.message || 'An unknown error occurred';
+        const status_code = error.error.statusCode || 500;
+        this.toastService.error(error_message, status_code);
+        this.loadingSubject.next(false);
+      },
+    });
   }
 }

@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 export class Pagination {
   @Input() currentPage: number = 1;
   @Input() totalItems: number = 0;
-  @Input() itemsPerPage: number = 10;
+  @Input() itemsPerPage: number = 1;
   @Input() totalPages: number = 0;
   @Output() pageChange = new EventEmitter<number>();
 

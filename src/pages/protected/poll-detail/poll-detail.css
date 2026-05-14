@@ -4,6 +4,7 @@
     border: 0.5px solid var(--color-hover);
     overflow: hidden;
     font-family: var(--font-text);
+    margin: 1rem;
 }
 
 .poll-body {
@@ -87,7 +88,7 @@
 }
 
 .option-item--selected {
-    border: 1.5px solid var(--color-bg-dark);
+    border: 1.5px solid var(--color-primary);
     background: var(--color-white);
 }
 
@@ -105,8 +106,8 @@
 }
 
 .option-radio--selected {
-    border-color: var(--color-bg-dark);
-    background: var(--color-bg-dark);
+    border-color: var(--color-primary);
+    background: var(--color-primary);
 }
 
 .option-radio__dot {
@@ -126,32 +127,6 @@
 
 .option-label--selected {
     font-weight: var(--font-weight-medium);
-}
-
-
-.submit-btn {
-    width: 100%;
-    background: var(--color-bg-dark);
-    border: none;
-    border-radius: var(--radius-md);
-    padding: 0.65rem;
-    text-align: center;
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-white);
-    cursor: pointer;
-    font-family: var(--font-text);
-    transition: opacity 0.2s ease, background 0.2s ease;
-    margin-top: 0.5rem;
-}
-
-.submit-btn:hover:not(:disabled) {
-    background: var(--color-primary);
-}
-
-.submit-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
 }
 
 
@@ -230,41 +205,6 @@
     font-family: var(--font-text);
 }
 
-.result-name--leading {
-    font-weight: var(--font-weight-medium);
-}
-
-.result-pct {
-    font-size: var(--font-size-xs);
-    color: var(--color-text);
-    font-family: var(--font-text);
-}
-
-.result-pct--leading {
-    font-weight: var(--font-weight-medium);
-    color: var(--color-primary);
-}
-
-
-.result-bar-track {
-    height: 8px;
-    background: var(--color-hover);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.result-bar-fill {
-    height: 100%;
-    background: var(--color-bg-dark);
-    border-radius: 4px;
-    opacity: 0.4;
-    transition: width 0.4s ease;
-}
-
-.result-bar-fill--leading {
-    background: var(--color-primary);
-    opacity: 1;
-}
 
 .result-votes {
     font-size: 11px;
@@ -279,6 +219,7 @@
     border-top: 0.5px solid var(--color-hover);
     padding-top: 1rem;
     margin-top: 0.4rem;
+    margin-bottom: 1rem;
 }
 
 .your-state__label {

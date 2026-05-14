@@ -6,14 +6,14 @@
 <div class="nav-bar">
   <div class="nav-bar-content">
 
-    <!-- logo -->
+
     <div class="nav-bar-logo">
       <a routerLink="/" aria-label="CivicPoll home">
         <img src="assets/logo.png" alt="CivicPoll">
       </a>
     </div>
 
-    <!-- desktop nav -->
+
     <nav class="nav-bar-links" aria-label="Main navigation">
       <ul class="nav-list">
         <li class="nav-list-item">
@@ -29,7 +29,7 @@
       </ul>
     </nav>
 
-    <!-- desktop logout -->
+
     <div class="button-container">
       @if(isLoggedIn$ | async) {
       <app-button (buttonClick)="toggleModal()">Logout</app-button>
@@ -39,17 +39,17 @@
 
     </div>
 
-    <!-- hamburger button -->
+
     <button class="nav-bar-menu" aria-label="Open menu" [attr.aria-expanded]="menuOpened" aria-controls="mobile-menu"
       (click)="toggleMenu()">
       <img class="nav-bar-menu-icon" src="assets/icons/menu.svg" alt="">
     </button>
 
-    <!-- overlay -->
+
     <div class="nav-bar-menu-overlay" [class.open]="menuOpened" (click)="toggleMenu()">
     </div>
 
-    <!-- mobile menu panel -->
+
     <div id="mobile-menu" class="nav-bar-menu-content" [class.open]="menuOpened" [attr.aria-hidden]="!menuOpened">
 
       <div class="nav-bar-menu-inner-content">
@@ -72,7 +72,7 @@
             </ul>
           </nav>
 
-          <!-- close button -->
+
           <button class="nav-bar-menu" aria-label="Close menu" (click)="toggleMenu()">
             <img class="nav-bar-menu-icon" src="assets/icons/close.svg" alt="">
           </button>

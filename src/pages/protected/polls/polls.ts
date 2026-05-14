@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Pagination } from '../../../shared/components/pagination/pagination';
+import { PollService } from '../service/poll-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-polls',
@@ -9,14 +11,23 @@ import { Pagination } from '../../../shared/components/pagination/pagination';
   templateUrl: './polls.html',
   styleUrl: './polls.css',
 })
-export class Polls {
-  totalPages: number = 2;
-  onVote(pollId: string): void {
-    console.log('Voting on poll:', pollId);
-    // Navigate to poll detail / vote page
+export class Polls implements OnInit {
+  private pollService = inject(PollService);
+  private router = inject(Router);
+  stats$ = this.pollService.stats$;
+  activePoll$ = this.pollService.activePolls$;
+  currentPage = 1;
+  itemsPerPage = 10;
+
+  navigateToDetail(poll_id: number) {
+    this.router.navigateByUrl(`app/polls/${poll_id}`);
+  }
+  onPageChange(page: number) {
+    this.pollService.loadActivePoll(page, this.itemsPerPage).subscribe();
   }
 
-  onViewResults(pollId: string): void {
-    console.log('Viewing results for poll:', pollId);
+  ngOnInit(): void {
+    this.pollService.getDashboardStats().subscribe();
+    this.pollService.loadActivePoll(this.currentPage, this.itemsPerPage).subscribe();
   }
 }

@@ -1,63 +1,49 @@
+@let stats = stats$ | async;
+
 <div class="dashboard-wrapper">
 
     <div class="dashboard-body">
-
         <div class="stats-row">
             <div class="stat-card">
-                <p class="stat-value">3</p>
+                <p class="stat-value">{{stats?.active_polls}}</p>
                 <p class="stat-label">Active polls</p>
             </div>
             <div class="stat-card">
-                <p class="stat-value">5,245</p>
+                <p class="stat-value">{{stats?.total_votes}}</p>
                 <p class="stat-label">Total votes</p>
             </div>
             <div class="stat-card">
-                <p class="stat-value">37</p>
+                <p class="stat-value">{{stats?.states_reached}}</p>
                 <p class="stat-label">States reached</p>
             </div>
         </div>
 
+        <p class="section-active">Active polls</p>
 
-        <div class="section-header">
-            <div class="section-title-group">
-                <p class="section-eyebrow">Active polls</p>
-                <h2 class="section-title">What Nigeria needs most</h2>
-            </div>
-
-        </div>
-
+        @if (activePoll$ | async; as response) {
         <div class="polls-grid">
+            @for (poll of response.data; track poll.id) {
 
-            <div class="poll-card poll-card--featured" (click)="onVote('infrastructure')">
-                <div class="poll-card__header">
-                    <span class="status-badge status-badge--active">Active</span>
-                    <span class="options-count">4 options</span>
+            <div class="poll-card poll-card--featured" (click)="navigateToDetail(poll.id)">
+                <div class="poll-card-header">
+                    <span class="status-badge status-badge--active">{{poll.status}}</span>
+                    <span class="options-count">{{poll.poll_option.length}} options</span>
                 </div>
-                <p class="poll-card__title">Most urgent infrastructure priority for Nigeria</p>
-                <p class="poll-card__subtitle">Roads, power, water, or internet?</p>
-                <div class="poll-card__footer">
-                    <span class="vote-count">1,248 votes</span>
-                    <span class="vote-cta">Vote →</span>
-                </div>
+                <p class="poll-card-title">{{poll.title}}</p>
+                <p class="poll-card-subtitle">{{poll.description | slice: 0 : 100}}</p>
             </div>
-
-            <div class="poll-card" (click)="onVote('unemployment')">
-                <div class="poll-card__header">
-                    <span class="status-badge status-badge--active">Active</span>
-                    <span class="options-count">3 options</span>
-                </div>
-                <p class="poll-card__title">Best approach to tackle youth unemployment</p>
-                <p class="poll-card__subtitle">Skills training, entrepreneurship, or public jobs?</p>
-                <div class="poll-card__footer">
-                    <span class="vote-count">892 votes</span>
-                    <span class="vote-cta">Vote →</span>
-                </div>
-            </div>
+            }
         </div>
 
-
+        @if(response.pagination.total_pages > 1){
         <div style="margin-top: 2rem;">
-            <app-pagination [totalPages]="totalPages" />
+            <app-pagination [currentPage]="response.pagination.page" [totalItems]="response.pagination.total"
+                [itemsPerPage]="response.pagination.limit" [totalPages]="response.pagination.total_pages"
+                (pageChange)="onPageChange($event)" />
         </div>
+        }
+
+        }
+
     </div>
 </div>

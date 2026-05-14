@@ -27,10 +27,15 @@ export class ShellLayout implements OnInit {
   isMenuOpen: boolean = false;
   showLogoutModal$ = this.authService.showLogoutModal$;
   profile$ = this.authService.profile$;
+  isAdmin = 'admin';
   protected navLinks = [
-    { label: 'Dashboard', routerLink: '/app/dashboard', exact: true },
-    { label: 'Polls', routerLink: '/app/polls', exact: false },
+    // { label: 'Dashboard', routerLink: '/app/dashboard', exact: true },
+    { label: 'Polls', routerLink: '/app/polls', exact: true },
     { label: 'Profile', routerLink: '/app/profile', exact: false },
+  ];
+  protected adminPanelLinks = [
+    { label: 'Manage poll', routerLink: '/app/manage-polls', exact: true },
+    { label: 'manage users', routerLink: '/app/manage-users', exact: false },
   ];
 
   ngOnInit(): void {
