@@ -1,7 +1,5 @@
 # CivicPoll
 
-# CivicPoll
-
 **CivicPoll** is a digital polling and civic engagement platform that empowers citizens to voice their opinions on issues that directly affect their communities, all from the comfort of their homes.
 
 The platform enables users to participate in transparent public polls and view real-time results that reflect public sentiment at both local and broader levels. Votes can be filtered and aggregated by state, providing clear regional insights into the issues that matter most to people.
@@ -212,3 +210,9 @@ Output goes to `dist/civic-voting-poll/`.
 ![CivicPoll Screenshot](./public/preview.png)
 
 ---
+
+---
+
+## Author
+
+Built by **Wisdom Ogedengbe** as a capstone project for the Seamfix Developer Program.
