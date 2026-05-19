@@ -1,1 +1,92 @@
-<p>poll-detail works!</p>
+@let profile = profile$ | async;
+@let voteObject = voteObj$ | async;
+@let hasVoted = hasVoted$ | async;
+
+<div class="poll-detail-wrapper">
+
+    @if (detailLoader$ | async) {
+    <app-loader />
+    }@else if (error$ | async; as error) {
+    <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+    } @else if (details$ | async; as poll) {
+    <div class="poll-body">
+
+        <article class="vote-panel">
+            <span class="status-badge status-badge--active">{{ poll?.status }}</span>
+            <h2 class="poll-title">{{ poll?.title }}</h2>
+            <p class="poll-description">{{ poll?.description }}</p>
+
+            <div class="options-section">
+                <p class="options-label">Cast your vote</p>
+
+                @for (option of poll?.poll_option; track option.id) {
+                <div class="option-item"
+                    [class.option-item--selected]="selectedOption === option.id || voteObject?.option_id === option.id"
+                    (click)="selectOption(option.id)">
+
+                    <div class="option-radio"
+                        [class.option-radio--selected]="selectedOption === option.id || voteObject?.option_id === option.id">
+                        @if (selectedOption === option.id || voteObject?.option_id === option.id) {
+                        <div class="option-radio__dot"></div>
+                        }
+                    </div>
+
+                    <span class="option-label"
+                        [class.option-label--selected]="selectedOption === option.id || voteObject?.option_id === option.id">
+                        {{ option.option_text }}
+                    </span>
+                </div>
+                }
+
+                <app-button [disabled]="!selectedOption || !!hasVoted" (buttonClick)="submitVote()" [fullWidth]="true">
+                    {{ hasVoted ? 'Vote submitted ✓' : 'Submit vote' }}
+                </app-button>
+            </div>
+
+            <div class="poll-meta">
+                <div class="meta-item">
+                    <p class="meta-value">{{ poll?.total_vote }}</p>
+                    <p class="meta-label">Total votes</p>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <p class="meta-label">Created by</p>
+                    <p class="meta-value meta-value--sm">
+                        {{ poll?.user?.first_name }} {{ poll?.user?.last_name }}
+                    </p>
+                </div>
+            </div>
+        </article>
+
+        <article class="snapshot-panel">
+            <p class="snapshot-label">Live snapshot</p>
+
+            @for (option of poll?.poll_option; track option.id) {
+            <div class="result-item">
+                <div class="result-header">
+                    <span class="result-name">{{ option.option_text }}</span>
+                </div>
+                <span class="result-votes">{{ option.vote_count }} votes</span>
+            </div>
+            }
+
+            <div class="your-state">
+                <p class="your-state__label">
+                    {{ voteObject?.state?.name ? 'You voted in' : 'Your state' }}
+                </p>
+                <div class="your-state__value">
+                    <div class="state-dot"></div>
+                    <span class="state-name">
+                        {{ voteObject?.state?.name ?? profile?.state }}
+                    </span>
+                </div>
+            </div>
+
+            <app-button (buttonClick)="viewResult()" [fullWidth]="true">
+                View result
+            </app-button>
+        </article>
+
+    </div>
+    }
+</div>

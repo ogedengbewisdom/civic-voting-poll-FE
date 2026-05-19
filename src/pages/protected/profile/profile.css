@@ -1,8 +1,93 @@
 .profile-container {
 
     display: flex;
+    /* flex-direction: column; */
+    /* align-items: center; */
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding-inline: var(--spacing-xl);
+}
+
+.profile-setup {
+    width: 30%;
+    height: 250px;
+    background-color: var(--color-white);
+    display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.profile-role {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.role {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-hover);
+    font-size: var(--font-size-xs);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-sm);
+}
+
+.location {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: transparent;
+    font-size: var(--font-size-xs);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-text);
+}
+
+.state-dot {
+    width: var(--spacing-sm);
+    height: var(--spacing-sm);
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    margin-right: var(--spacing-xs);
+}
+
+.profile-data {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.name {
+    /* font-family: var(--); */
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+}
+
+.email {
+    color: var(--color-text);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-hover);
+    color: var(--color-text);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
 }
 
 .profile-form {
@@ -36,9 +121,17 @@
 
 @media (max-width: 768px) {
 
+    .profile-container {
+        flex-direction: column;
+    }
+
+    .profile-setup {
+        width: 100%;
+    }
+
     .profile-form {
         padding: 0 var(--spacing-md);
-        width: 90%;
+        width: 100%;
     }
 
     .profile-form-header h1 {

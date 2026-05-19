@@ -1,6 +1,7 @@
 <button class="button" [disabled]="disabled || loading" [type]="type" [class.small]="size === 'small'"
     [class.medium]="size === 'medium'" [class.large]="size === 'large'" [class.primary]="variant === 'primary'"
-    [class.secondary]="variant === 'secondary'" [class.tertiary]="variant === 'tertiary'" [class.full-width]="fullWidth"
+    [class.secondary]="variant === 'secondary'" [class.tertiary]="variant === 'tertiary'"
+    [class.warning]="variant === 'warning'" [class.danger]="variant === 'danger'" [class.full-width]="fullWidth"
     [class.disabled]="disabled" [class.loading]="loading" (click)="buttonClick.emit()">
     <ng-content></ng-content>
 </button>

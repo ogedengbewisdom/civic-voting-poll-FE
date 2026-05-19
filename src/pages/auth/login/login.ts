@@ -33,7 +33,7 @@ export class Login implements OnInit, OnDestroy {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef$ = inject(DestroyRef);
-  redirectUrl: string = '/app/dashboard';
+  redirectUrl: string = '/app/polls';
   loading$ = this.loadingSubject.asObservable();
   loginForm!: FormGroup;
 
@@ -49,7 +49,7 @@ export class Login implements OnInit, OnDestroy {
     this.activatedRoute.queryParams
       .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef$))
       .subscribe((params) => {
-        this.redirectUrl = params['redirectUrl'] || '/app/dashboard';
+        this.redirectUrl = params['redirectUrl'] || '/app/polls';
       });
   }
 

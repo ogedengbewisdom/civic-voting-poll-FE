@@ -63,6 +63,42 @@ export const getErrorMessage = (
   return 'Invalid field';
 };
 
+export const errorArrayState = (
+  fieldName: string,
+  index: number,
+  poll_options_array: AbstractControl[],
+): boolean => {
+  const control = poll_options_array.at(index)?.get(fieldName);
+  return !!(control && control.touched && control.invalid);
+};
+
+export const arrayErrorMessage = (
+  fieldName: string,
+  index: number,
+  poll_options_array: AbstractControl[],
+): string => {
+  const control = poll_options_array.at(index)?.get(fieldName);
+
+  if (!control || !control.errors) {
+    return '';
+  }
+
+  if (control.errors['required']) {
+    return `${formatFieldName(fieldName)} is required`;
+  }
+
+  if (control.errors['minlength']) {
+    const minLength = control.errors['minlength'].requiredLength;
+    return `${formatFieldName(fieldName)} must be at least ${minLength} characters`;
+  }
+
+  if (control.errors['pattern']) {
+    return `${formatFieldName(fieldName)} format is invalid`;
+  }
+
+  return 'Invalid field';
+};
+
 export const passwordMatchValidator = (
   passwordKey: string = 'password',
   confirmPasswordKey: string = 'confirmPassword',

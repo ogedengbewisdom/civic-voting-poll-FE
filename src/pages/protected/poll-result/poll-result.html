@@ -1,0 +1,103 @@
+<!-- @let pollResult = pollResult$ | async; -->
+
+<section class="results-wrapper" aria-labelledby="results-title">
+
+    @if (loading$ | async) {
+    <app-loader />
+    } @else if (error$ | async; as error) {
+    <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+    } @else if (pollResult$ | async; as pollResult) {
+    <header class="results-header">
+        <div class="header-left">
+            <h1 id="results-title" class="header-title">{{pollResult?.title}}</h1>
+            <p class="header-eyebrow" aria-label="Section type">{{pollResult?.description}}</p>
+        </div>
+
+        <div class="header-right">
+            <label for="state-filter" class="filter-label">Filter by state:</label>
+            <div class="state-filter">
+                <select id="state-filter" class="state-select" [(ngModel)]="selectedState" (change)="onStateChange()"
+                    aria-label="Filter results by state">
+                    <option value="all">All states</option>
+
+                    @for (state of state$ | async; track state.value) {
+                    <option [value]="state.value">{{ state.label }}</option>
+                    }
+                </select>
+                <span class="select-arrow" aria-hidden="true">▾</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <p class="stat-value">{{pollResult?.summary?.total_votes}}</p>
+            <p class="stat-label">Total votes</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-value">{{pollResult?.summary?.states_voting}}</p>
+            <p class="stat-label">State voting</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-value">{{pollResult?.summary?.leading_option}}</p>
+            <p class="stat-label">Leading options</p>
+        </div>
+    </div>
+
+    <div class="results-body">
+
+        <article class="breakdown-panel" aria-labelledby="breakdown-heading">
+            <h2 id="breakdown-heading" class="panel-label">Options</h2>
+
+            <ul role="list" aria-label="Vote breakdown by option">
+
+                @for (option of pollResult?.poll_option; track option.option_id) {
+                <li class="breakdown-item">
+                    <div class="breakdown-item__inner">
+
+                        <div class="breakdown-row">
+                            <span class="breakdown-name">
+                                {{ option.option_text }}
+                            </span>
+                            <span class="breakdown-stat" aria-hidden="true">
+                                {{ option.percentage ? option.percentage : 0}}% · {{ option.total_votes }} votes
+                            </span>
+                        </div>
+
+                        <div class="bar-track" role="progressbar">
+                            <div class="bar-fill" [style.width.%]="option.percentage ? option.percentage : 0"
+                                aria-hidden="true">
+                            </div>
+                            <div class="bar-bg" aria-hidden="true"></div>
+                        </div>
+
+                    </div>
+                </li>
+                }
+
+            </ul>
+        </article>
+
+        <article class="states-panel" aria-labelledby="states-heading">
+            <h2 id="states-heading" class="panel-label">Vote breakdown — All states</h2>
+
+            <ul role="list" aria-label="Top states by vote participation">
+
+                @for (state of pollResult?.all_states; track state.state_id) {
+                <li class="state-item">
+                    <span class="state-dot" aria-hidden="true"></span>
+                    <span class="state-name">{{ state.state_name }}</span>
+                    <span class="state-votes">{{ `${state.count === 0 ? 'No votes yet' : state.count + " " + "Vote"}`
+                        }}</span>
+                </li>
+                }
+
+            </ul>
+
+        </article>
+
+    </div>
+    }
+
+
+</section>

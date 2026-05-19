@@ -22,6 +22,7 @@ export class Profile implements OnInit {
   private stateService = inject(StateService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  profile$ = this.authService.profile$;
   state$!: Observable<IOption[]>;
   userData = this.authService.getUserData();
   profileForm!: FormGroup;

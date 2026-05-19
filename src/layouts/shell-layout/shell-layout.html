@@ -24,6 +24,18 @@
                     </li>
                     }
                 </ul>
+                @if (profile?.role === isAdmin) {
+                <ul class="nav-list" style="margin-top: 1rem;">
+                    @for (navLink of adminPanelLinks; track navLink.label) {
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="navLink.routerLink" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{ exact: navLink.exact }">
+                            {{navLink.label | titlecase}}
+                        </a>
+                    </li>
+                    }
+                </ul>
+                }
             </nav>
             <div class="app-button">
                 <div style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;">
@@ -75,11 +87,18 @@
                                 </li>
                                 }
                             </ul>
+                            @if (profile?.role === isAdmin) {
+                            <ul class="admin-list" style="gap: 1rem;">
+                                @for (navLink of adminPanelLinks; track navLink.label) {
+                                <li class="menu-item">
+                                    <a class="menu-link" [routerLink]="navLink.routerLink" routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{ exact: navLink.exact }"
+                                        (click)="toggleMenu()">{{navLink.label | titlecase}}</a>
+                                </li>
+                                }
+                            </ul>
+                            }
 
-                            <!-- <div class="menu-logout">
-                                <app-button (buttonClick)="logout()" [fullWidth]="true"
-                                    variant="primary">Logout</app-button>
-                            </div> -->
                             <div class="app-button">
                                 <div style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;">
                                     <div class="profile-email-avartar ">

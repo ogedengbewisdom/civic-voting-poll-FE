@@ -30,7 +30,7 @@
 
             <div class="login-form-actions">
                 <app-button type="submit" [fullWidth]="true"
-                    [disabled]="loginForm.invalid || (loading$ | async) === true">Login</app-button>
+                    [disabled]="loginForm.invalid || !!(loading$ | async)">Login</app-button>
             </div>
         </form>
     </article>

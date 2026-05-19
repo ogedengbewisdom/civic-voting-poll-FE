@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 })
 export class Button {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  @Input() variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'tertiary' | 'warning' | 'danger' = 'primary';
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled: boolean = false;
   @Input() loading: boolean = false;
