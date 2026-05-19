@@ -38,7 +38,7 @@
 }
 
 .toast.pending {
-    background-color: var(--color-pending);
+    background-color: var(--color-info);
     color: var(--color-white);
 }
 

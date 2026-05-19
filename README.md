@@ -175,6 +175,11 @@ Button click → emit event → parent closes detail panel → confirm modal ope
 
 Child components only emit `@Output()` events. Parents own all state and make all API calls.
 
+
+**3. Session storage**
+
+JWT token is stored in session storage.
+
 ---
 
 ## Running tests
