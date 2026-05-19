@@ -1,9 +1,14 @@
-@let poll = details$ | async;
 @let profile = profile$ | async;
 @let voteObject = voteObj$ | async;
 @let hasVoted = hasVoted$ | async;
 
 <div class="poll-detail-wrapper">
+
+    @if (detailLoader$ | async) {
+    <app-loader />
+    }@else if (error$ | async; as error) {
+    <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+    } @else if (details$ | async; as poll) {
     <div class="poll-body">
 
         <article class="vote-panel">
@@ -83,4 +88,5 @@
         </article>
 
     </div>
+    }
 </div>

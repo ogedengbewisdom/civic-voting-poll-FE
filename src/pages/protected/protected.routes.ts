@@ -20,11 +20,11 @@ export const PROTECTED_ROUTES: Routes = [
         path: 'manage-polls',
         loadComponent: () => import('./manage-polls/manage-polls').then((m) => m.ManagePolls),
       },
-      {
-        canActivate: [roleGuard],
-        path: 'manage-users',
-        loadComponent: () => import('./manage-users/manage-users').then((m) => m.ManageUsers),
-      },
+      // {
+      //   canActivate: [roleGuard],
+      //   path: 'manage-users',
+      //   loadComponent: () => import('./manage-users/manage-users').then((m) => m.ManageUsers),
+      // },
       { path: 'polls', loadComponent: () => import('./polls/polls').then((m) => m.Polls) },
       {
         path: 'polls/:poll_id',

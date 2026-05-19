@@ -24,6 +24,12 @@ export interface IPoll {
   updated_at: string;
 }
 
+export interface ICreatePoll {
+  title: string;
+  description: string;
+  poll_options: string[];
+}
+
 export interface IDashboard {
   active_polls: number;
   total_votes: number;
@@ -114,4 +120,15 @@ export interface IPolls {
   created_at: string;
   updated_at: string;
   poll_option_count: number;
+}
+
+export interface IUpdatePollOption {
+  id?: number;
+  option_text: string;
+}
+
+export interface IUpdatePoll {
+  title?: string;
+  description?: string;
+  poll_options?: IUpdatePollOption[];
 }

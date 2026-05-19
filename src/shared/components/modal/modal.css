@@ -19,5 +19,9 @@
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    /* text-align: stat; */
+}
+
+.center-content {
     text-align: center;
 }

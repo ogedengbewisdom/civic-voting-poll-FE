@@ -2,16 +2,18 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PollService } from '../service/poll-service';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, tap } from 'rxjs';
 import { IDetailProps } from '../interface';
 import { AuthService } from '../../auth/service/auth-service';
 import { Button } from '../../../shared/components/button/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastService } from '../../../shared/components/toast/service/toast-service';
+import { Loader } from '../../../shared/components/loader/loader';
+import { ErrorState } from '../../../shared/components/error-state/error-state';
 
 @Component({
   selector: 'app-poll-detail',
-  imports: [CommonModule, Button],
+  imports: [CommonModule, Button, Loader, ErrorState],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './poll-detail.html',
   styleUrl: './poll-detail.css',
@@ -25,6 +27,10 @@ export class PollDetail implements OnInit {
   private destroyRef$ = inject(DestroyRef);
   private toastService = inject(ToastService);
   private loadingSubject = new BehaviorSubject<boolean>(false);
+  private detailLoadingSubject = new BehaviorSubject<boolean>(false);
+  private errorSubject = new BehaviorSubject<{ message: string; statusCode: number } | null>(null);
+  error$ = this.errorSubject.asObservable();
+  detailLoader$ = this.detailLoadingSubject.asObservable();
   loading$ = this.loadingSubject.asObservable();
   voteObj$ = this.pollService.voteObj$;
   hasVoted$ = this.voteObj$.pipe(map((vote) => !!vote?.id));
@@ -39,12 +45,25 @@ export class PollDetail implements OnInit {
     this.pollService
       .loadSingleActivePoll(this.poll_id)
       .pipe(
+        tap(() => {
+          this.detailLoadingSubject.next(true);
+        }),
         takeUntilDestroyed(this.destroyRef$),
         map((data) => {
           this.detailSubject.next(data);
         }),
       )
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.detailLoadingSubject.next(false);
+        },
+        error: (err) => {
+          this.detailLoadingSubject.next(false);
+          const error_message = err.error.message || 'An unknown error occurred';
+          const status_code = err.error.statusCode || 500;
+          this.errorSubject.next({ message: error_message, statusCode: status_code });
+        },
+      });
 
     this.pollService
       .checkVotedPoll(this.poll_id)

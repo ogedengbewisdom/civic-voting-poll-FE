@@ -1,0 +1,14 @@
+<app-modal>
+    <div class="icon-wrapper">
+        <img src="/assets/icons/warning.svg" alt="warning-icon" />
+    </div>
+
+    <h2>{{title}}</h2>
+    <p>{{message}}</p>
+
+    <div class="actions">
+        <app-button (buttonClick)="cancelled.emit()" [disabled]="disabled">{{cancelLabel}}</app-button>
+        <app-button [variant]="'danger'" (buttonClick)="confirmed.emit()"
+            [disabled]="disabled">{{confirmLabel}}</app-button>
+    </div>
+</app-modal>

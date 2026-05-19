@@ -20,29 +20,38 @@
 
         <p class="section-active">Active polls</p>
 
-        @if (activePoll$ | async; as response) {
+        @if (pollLoader$ | async) {
+        <app-loader />
+        } @else if (error$ | async; as error) {
+        <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+        }
+        @else if (activePoll$ | async; as response) {
+
+        @if (response.data.length === 0) {
+        <app-empty-state title="No polls available yet"
+            message="There are no active polls at the moment. Create a poll on a topic of your choice." />
+        } @else {
         <div class="polls-grid">
             @for (poll of response.data; track poll.id) {
-
             <div class="poll-card poll-card--featured" (click)="navigateToDetail(poll.id)">
                 <div class="poll-card-header">
-                    <span class="status-badge status-badge--active">{{poll.status}}</span>
-                    <span class="options-count">{{poll.poll_option.length}} options</span>
+                    <span class="status-badge status-badge--active">{{ poll.status }}</span>
+                    <span class="options-count">{{ poll.poll_option.length }} options</span>
                 </div>
-                <p class="poll-card-title">{{poll.title}}</p>
-                <p class="poll-card-subtitle">{{poll.description | slice: 0 : 100}}</p>
+                <p class="poll-card-title">{{ poll.title }}</p>
+                <p class="poll-card-subtitle">{{ poll.description | slice: 0 : 100 }}</p>
             </div>
             }
         </div>
 
-        @if(response.pagination.total_pages > 1){
+        @if (response.pagination.total_pages > 1) {
         <div style="margin-top: 2rem;">
             <app-pagination [currentPage]="response.pagination.page" [totalItems]="response.pagination.total"
                 [itemsPerPage]="response.pagination.limit" [totalPages]="response.pagination.total_pages"
                 (pageChange)="onPageChange($event)" />
         </div>
         }
-
+        }
         }
 
     </div>

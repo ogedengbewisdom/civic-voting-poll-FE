@@ -1,6 +1,12 @@
-@let pollResult = pollResult$ | async;
+<!-- @let pollResult = pollResult$ | async; -->
 
 <section class="results-wrapper" aria-labelledby="results-title">
+
+    @if (loading$ | async) {
+    <app-loader />
+    } @else if (error$ | async; as error) {
+    <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+    } @else if (pollResult$ | async; as pollResult) {
     <header class="results-header">
         <div class="header-left">
             <h1 id="results-title" class="header-title">{{pollResult?.title}}</h1>
@@ -37,7 +43,6 @@
             <p class="stat-label">Leading options</p>
         </div>
     </div>
-
 
     <div class="results-body">
 
@@ -82,7 +87,8 @@
                 <li class="state-item">
                     <span class="state-dot" aria-hidden="true"></span>
                     <span class="state-name">{{ state.state_name }}</span>
-                    <span class="state-votes">{{ state.count }} votes</span>
+                    <span class="state-votes">{{ `${state.count === 0 ? 'No votes yet' : state.count + " " + "Vote"}`
+                        }}</span>
                 </li>
                 }
 
@@ -91,5 +97,7 @@
         </article>
 
     </div>
+    }
+
 
 </section>

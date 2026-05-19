@@ -1,17 +1,98 @@
+@if (showCloseModal) {
+<app-pollaction-modal title="Confirm you want to close this poll" [disabled]="!!(loading$ | async)"
+    message="Are you sure you want to close this poll? Voters will no longer be able to submit responses."
+    confirmLabel="Close poll" cancelLabel="Cancel" (confirmed)="closePoll()" (cancelled)="cancelCloseModal()">
+</app-pollaction-modal>
+}
+@if (showDeleteModal) {
+<app-pollaction-modal title="Delete this poll?" [disabled]="!!(loading$ | async)"
+    message="This action cannot be undone. All votes will be permanently removed." confirmLabel="Delete"
+    cancelLabel="Cancel" (confirmed)="deletePoll()" (cancelled)="showDeleteModal = false">
+</app-pollaction-modal>
+}
+
+@if (showActivateModal) {
+<app-pollaction-modal title="Activate this poll?" [disabled]="!!(loading$ | async)"
+    message="Once activated, this poll will be visible to voters and they can start submitting responses."
+    confirmLabel="Activate" cancelLabel="Cancel" (confirmed)="activatePoll()" (cancelled)="cancelActivateModal()">
+</app-pollaction-modal>
+}
+
+@if (showFormModal && pollForm) {
+<app-modal [center]="false">
+    <button class="nav-bar-menu" aria-label="Close menu" (click)="onCancelPollForm()" type="button">
+        <img class="nav-bar-menu-icon" src="assets/icons/close.svg" alt="">
+    </button>
+    <div class="form-container">
+        <h2>{{`${this.selectedPollId ? 'Edit' : 'Create'}`}} Poll Form</h2>
+        <form [formGroup]="pollForm" (ngSubmit)="submitForm()" class="form">
+
+            <app-text-input label="Title" name="title" placeholder="Enter title" type="text" [formGroup]="pollForm"
+                [hasError]="hasError('title')" [errorMessage]="errorMessage('title')" />
+            <app-text-area label="Description" name="description" placeholder="Enter description" type="text"
+                [formGroup]="pollForm" [hasError]="hasError('description')"
+                [errorMessage]="errorMessage('description')" />
+
+            <div formArrayName="poll_options" class="form-array-wrapper">
+                @for (property of poll_option_array.controls; track $index) {
+                <div [formGroupName]="$index" class="form-array-item">
+                    <div class="input-wrapper">
+                        <label for="option_text">Option Text</label>
+                        <input type="text" id="option_text" placeholder="Add option" class="text-input"
+                            [class.error]="hasArrayError('option_text', $index)" formControlName="option_text">
+                        @if (hasArrayError('option_text', $index)) {
+                        <p class="error-message">{{getArrayErrorMessage('option_text', $index)}}</p>
+                        }
+                    </div>
+                    @if (!selectedPollId) {
+                    <button type="button" class="action-btn" (click)="removeOption($index)"
+                        [disabled]="poll_option_array.length <= 2">-</button>
+                    }
+                </div>
+                }
+            </div>
+            @if (!selectedPollId) {
+            <app-button type="button" (buttonClick)="addOption()" [disabled]="poll_option_array.length>= 4">+ Add
+                option</app-button>
+            }
+
+            <app-button type='submit' [fullWidth]="true"
+                [disabled]="pollForm.invalid || !!(loading$ | async)">Submit</app-button>
+
+        </form>
+    </div>
+</app-modal>
+}
+
+
 <section>
     <div class="polls-management">
-        <!-- Header -->
+
         <header class="management-header" aria-labelledby="polls-heading">
             <div class="header-left">
                 <p class="header-eyebrow">Management</p>
                 <h1 id="polls-heading" class="header-title">All polls</h1>
             </div>
-
-            <app-button>+ New poll</app-button>
+            <div class="search-wrapper">
+                <input class="search-input" [formControl]="searchControl" id="search" placeholder="Search by title" />
+            </div>
+            <app-button (buttonClick)="onOpenForm()">+ New poll</app-button>
         </header>
 
-        <!-- Polls Table -->
+
         <div class="table-wrapper" role="region" aria-label="Polls management table" tabindex="0">
+
+            @if (pollLoader$ | async) {
+            <app-loader />
+            } @else if (error$ | async; as error) {
+            <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+            } @else if (polls$ | async; as response) {
+
+
+            @if (response.data.length === 0) {
+            <app-empty-state title="No polls available yet"
+                message="There are no active polls at the moment. Reach out to your admin to request a poll on a topic of your choice." />
+            } @else {
             <table class="polls-table" aria-describedby="polls-heading">
                 <thead>
                     <tr>
@@ -23,13 +104,10 @@
                 </thead>
 
                 <tbody>
-
-                    @if (polls$ | async; as response) {
-
                     @for (poll of response.data; track $index) {
                     <tr class="poll-row">
 
-                        <!-- Title cell -->
+
                         <td class="cell-title">
                             <span class="poll-name">{{ poll.title }}</span>
                             <span class="poll-meta">
@@ -37,7 +115,7 @@
                             </span>
                         </td>
 
-                        <!-- Status cell -->
+
                         <td class="cell-status">
                             <span class="status-badge" [class.status-badge--active]="poll.status === 'active'"
                                 [class.status-badge--closed]="poll.status === 'closed'">
@@ -60,13 +138,11 @@
 
                     </tr>
                     }
-                    }
 
                 </tbody>
 
             </table>
 
-            @if (polls$ | async; as response) {
             @if(response.pagination.total_pages > 1){
             <div style="margin-top: 2rem; padding-inline: 1rem;">
                 <app-pagination [currentPage]="response.pagination.page" [totalItems]="response.pagination.total"
@@ -74,18 +150,95 @@
                     (pageChange)="onPageChange($event)" />
             </div>
             }
+
             }
+
+            }
+
+
+
+
         </div>
     </div>
 
-
     <div class="nav-bar-menu-overlay" [class.open]="menuOpened" (click)="toggleMenu()">
     </div>
-    <div id="poll-detail" class="nav-bar-menu-content" [class.open]="menuOpened" [attr.aria-hidden]="!menuOpened">
+    <div id="poll-detail" class="nav-bar-menu-content" [class.open]="menuOpened">
 
         <div class="nav-bar-menu-inner-content">
+            <button class="nav-bar-menu" aria-label="Close poll-detail" (click)="toggleMenu()">
+                <img class="nav-bar-menu-icon" src="assets/icons/close.svg" alt="">
+            </button>
+            @if (detailLoader$ | async) {
+            <app-loader />
+            }@else if (detailError$ | async; as error) {
+            <app-error-state [statusCode]="error.statusCode" [errorMessage]="error.message" />
+            } @else if (details$ | async; as poll) {
+            <div class="poll-detail-wrapper">
+                <div class="poll-body">
 
+                    <article class="vote-panel">
+                        <span class="status-badge" [class.status-badge-active]="poll.status === 'active'"
+                            [class.status-badge-closed]="poll.status === 'closed'">{{
+                            poll?.status }}</span>
+                        <h2 class="poll-title">{{ poll?.title }}</h2>
+                        <p class="poll-description">{{ poll?.description }}</p>
 
+                        <div class="options-section">
+                            <!-- <p class="options-label">Cast your vote</p> -->
+
+                            @for (option of poll?.poll_option; track option.id) {
+                            <div class="option-item">
+
+                                <span class="option-label">
+                                    {{ option.option_text }}
+                                </span>
+                            </div>
+                            }
+                        </div>
+
+                        <div class="poll-meta">
+                            <div class="meta-item">
+                                <p class="meta-value">{{ poll?.total_vote }}</p>
+                                <p class="meta-label">Total votes</p>
+                            </div>
+                            <div class="meta-divider"></div>
+                            <div class="meta-item">
+                                <p class="meta-label">Created by</p>
+                                <p class="meta-value meta-value-sm">
+                                    {{ poll?.user?.first_name }} {{ poll?.user?.last_name }}
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="snapshot-panel">
+                        <p class="snapshot-label">Live snapshot</p>
+
+                        @for (option of poll?.poll_option; track option.id) {
+                        <div class="result-item">
+                            <div class="result-header">
+                                <span class="result-name">{{ option.option_text }}</span>
+                            </div>
+                            <span class="result-votes">{{ option.vote_count }} votes</span>
+                        </div>
+                        }
+
+                        <div class="detail-action">
+                            <app-button (buttonClick)="onActivate(poll.id)">Activate</app-button>
+                            <app-button [variant]="'warning'" (buttonClick)="onClose(poll.id)">Close</app-button>
+                            <app-button [variant]="'danger'" (buttonClick)="onDelete(poll.id)">Delete</app-button>
+                            <app-button (buttonClick)="onOpenForm(poll.id)">Edit</app-button>
+                        </div>
+
+                        <app-button (buttonClick)="viewResult(poll.id)" [fullWidth]="true">
+                            View result
+                        </app-button>
+                    </article>
+
+                </div>
+            </div>
+            }
 
         </div>
     </div>

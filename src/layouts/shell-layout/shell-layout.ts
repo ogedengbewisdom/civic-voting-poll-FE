@@ -35,7 +35,7 @@ export class ShellLayout implements OnInit {
   ];
   protected adminPanelLinks = [
     { label: 'Manage poll', routerLink: '/app/manage-polls', exact: true },
-    { label: 'manage users', routerLink: '/app/manage-users', exact: false },
+    // { label: 'manage users', routerLink: '/app/manage-users', exact: false },
   ];
 
   ngOnInit(): void {

@@ -1,14 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import {
+  ICreatePoll,
   IDashboard,
   IDetailProps,
   IPaginatedResponse,
   IPoll,
   IPolls,
   IResponse,
+  IUpdatePoll,
   IVote,
   IVoteResult,
 } from '../interface';
@@ -75,10 +77,10 @@ export class PollService {
     limit: number = 10,
     search?: string,
   ): Observable<IPaginatedResponse<IPolls>> {
-    const params = new HttpParams().set('page', page).set('limit', limit);
+    let params = new HttpParams().set('page', page).set('limit', limit);
 
     if (search) {
-      params.set('search', search);
+      params = params.set('search', search);
     }
     return this.http
       .get<
@@ -88,6 +90,127 @@ export class PollService {
         map((response) => {
           this.allPollSubject.next(response.data);
           return response.data;
+        }),
+      );
+  }
+
+  deletePoll(poll_id: number): Observable<IResponse<boolean>> {
+    const current_poll = this.allPollSubject.getValue();
+    if (current_poll) {
+      const updated = {
+        ...current_poll,
+        data: current_poll.data.filter((poll) => poll.id !== poll_id),
+      };
+
+      this.allPollSubject.next(updated);
+    }
+
+    return this.http
+      .delete<IResponse<boolean>>(`${this.apiUrl}/api/${this.version_1}/poll/${poll_id}`)
+      .pipe(
+        catchError((error) => {
+          this.allPollSubject.next(current_poll);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  closePoll(poll_id: number): Observable<IResponse<boolean>> {
+    const current_value = this.allPollSubject.getValue();
+
+    if (current_value) {
+      const updated = {
+        ...current_value,
+        data: current_value.data.map((poll) =>
+          poll.id === poll_id ? { ...poll, status: 'closed' } : poll,
+        ),
+      };
+
+      this.allPollSubject.next(updated);
+    }
+
+    return this.http
+      .patch<IResponse<boolean>>(`${this.apiUrl}/api/${this.version_1}/poll/${poll_id}/close`, null)
+      .pipe(
+        catchError((err) => {
+          this.allPollSubject.next(current_value);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  createPoll(poll: ICreatePoll): Observable<IResponse<boolean>> {
+    return this.http
+      .post<IResponse<boolean>>(`${this.apiUrl}/api/${this.version_1}/poll`, poll)
+      .pipe(
+        tap((data) => {
+          this.loadAllPoll(1, 10).subscribe();
+        }),
+      );
+  }
+
+  updatePoll(poll_id: number, payload: IUpdatePoll): Observable<IResponse<IPolls>> {
+    const current = this.allPollSubject.getValue();
+
+    if (current) {
+      const updated = {
+        ...current,
+        data: current.data.map((poll) =>
+          poll.id === poll_id
+            ? {
+                ...poll,
+                ...(payload.title && { title: payload.title }),
+                ...(payload.description && { description: payload.description }),
+              }
+            : poll,
+        ),
+      };
+      this.allPollSubject.next(updated);
+    }
+    return this.http
+      .patch<IResponse<IPolls>>(`${this.apiUrl}/api/${this.version_1}/poll/${poll_id}`, payload)
+      .pipe(
+        tap((response) => {
+          const latest = this.allPollSubject.getValue();
+          if (latest) {
+            const confirmed = {
+              ...latest,
+              data: latest.data.map((poll) =>
+                poll.id === poll_id ? { ...poll, ...response.data, user: poll.user } : poll,
+              ),
+            };
+            this.allPollSubject.next(confirmed);
+          }
+        }),
+        catchError((err) => {
+          this.allPollSubject.next(current);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  activatePoll(poll_id: number): Observable<IResponse<boolean>> {
+    const current_value = this.allPollSubject.getValue();
+
+    if (current_value) {
+      const updated = {
+        ...current_value,
+        data: current_value.data.map((poll) =>
+          poll.id === poll_id ? { ...poll, status: 'active' } : poll,
+        ),
+      };
+
+      this.allPollSubject.next(updated);
+    }
+
+    return this.http
+      .patch<
+        IResponse<boolean>
+      >(`${this.apiUrl}/api/${this.version_1}/poll/${poll_id}/activate`, null)
+      .pipe(
+        catchError((err) => {
+          this.allPollSubject.next(current_value);
+          return throwError(() => err);
         }),
       );
   }
