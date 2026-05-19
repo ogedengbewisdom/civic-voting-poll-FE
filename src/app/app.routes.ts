@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from '../layouts/main-layout/main-layout';
 import { NotFound } from '../pages/not-found/not-found';
-import { authGuard } from '../pages/auth/guard/auth-guard';
 
 export const routes: Routes = [
   {
@@ -25,7 +24,6 @@ export const routes: Routes = [
       {
         path: 'about',
         loadComponent: () => import('../pages/about/about').then((m) => m.About),
-        canActivate: [authGuard],
       },
       {
         path: '**',
